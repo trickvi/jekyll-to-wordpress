@@ -1,22 +1,41 @@
+import os
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods.posts import NewPost
 from wordpress_xmlrpc.methods.users import GetAuthors
 
-class WordPress(object):
-    def __init__(self, site='thesite.wordpress.com', user='theuser',
-                 password='thepassword', default_author='Joe Bloggs'):
-        self.wp = Client('http://%s/xmlrpc.php' % site, user, password)
-        self.default_author = default_author
-        self.authors = {a.display_name:a for a in self.wp.call(GetAuthors())}
+def get_config(key, **kwargs):
+    try:
+        if 'default' in kwargs:
+            return os.environ.get(key, kwargs['default'])
+        else:
+            return os.environ[key]
+    except:
+        raise KeyError('Please set the %s environment variable' % key)
 
-    def create(self, title, content, date, author):
+class WordPress(object):
+    def __init__(self):
+
+        site = get_config('WORDPRESS_SITE')
+        user = get_config('WORDPRESS_USER')
+        password = get_config('WORDPRESS_PASSWORD')
+        default_author = get_config('WORDPRESS_DEFAULT_AUTHOR', default=None)
+
+        self.wp = Client('http://%s/xmlrpc.php' % site, user, password)
+
+        self.authors = {a.display_name:a for a in self.wp.call(GetAuthors())}
+        self.default_author = self.get_author(default_author)
+
+    def create(self, title, content, date, author=None):
+        user = self.get_author(author, self.default_author)
         post = WordPressPost()
         post.title = title
         post.content = content
         post.date = date
+        if user:
+            post.user = user
         post.post_status = 'publish'
 
         return self.wp.call(NewPost(post))
 
-    def get_author_id(self, name):
-        return self.authors.get(name, self.authors[self.default_author])
+    def get_author(self, name, default=None):
+        return self.authors.get(name, default)
