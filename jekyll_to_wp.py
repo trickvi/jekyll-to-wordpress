@@ -17,10 +17,11 @@ class jekyll_to_wp():
         blogs = self.parse_blogs()
         for blog in blogs:
             print "Creating:", blog['front_matter']['title'], '...',
-            blog_id = self.wp.create(blog['front_matter']['title'],
-                                     blog['html'],
-                                     blog['date'],
-                                     self.authors.get(blog['author'], None))
+            blog_id = self.wp.create(title=blog['front_matter']['title'],
+                                     content=blog['html'],
+                                     date=blog['date'],
+                                     author=self.authors.get(blog['front_matter'].get('author', None), None),
+                                     publish=blog['front_matter']['published'] is True)
             print 'done (%s)' % blog_id
 
     # load authors from the config file!

@@ -25,7 +25,7 @@ class WordPress(object):
         self.authors = {a.display_name:a for a in self.wp.call(GetAuthors())}
         self.default_author = self.get_author(default_author)
 
-    def create(self, title, content, date, author=None):
+    def create(self, title, content, date, author, publish):
         user = self.get_author(author, self.default_author)
         post = WordPressPost()
         post.title = title
@@ -33,8 +33,8 @@ class WordPress(object):
         post.date = date
         if user:
             post.user = user.id
-        post.post_status = 'publish'
-
+        if publish:
+            post.post_status = 'publish'
         return self.wp.call(NewPost(post))
 
     def get_author(self, name, default=None):
