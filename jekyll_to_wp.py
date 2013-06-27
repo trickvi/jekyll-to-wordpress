@@ -21,6 +21,7 @@ class jekyll_to_wp():
                                      content=blog['html'],
                                      date=blog['date'],
                                      author=self.authors.get(blog['front_matter'].get('author', None), None),
+                                     tags=blog['front_matter'].get('tags', []),
                                      publish=blog['front_matter']['published'] is True)
             print 'done (%s)' % blog_id
 
