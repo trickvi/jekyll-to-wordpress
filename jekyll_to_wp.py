@@ -9,7 +9,9 @@ from wordpress import WordPress
 
 class jekyll_to_wp():
     def __init__(self):
-        wp = WordPress()
+        self.wp = WordPress()
+
+    def run(self):
         blogs = self.parse_blogs()
         for blog in blogs:
             print "Creating:", blog['front_matter']['title'], '...',
