@@ -9,7 +9,7 @@ class WordPress(object):
         self.default_author = default_author
         self.authors = {a.display_name:a for a in self.wp.call(GetAuthors())}
 
-    def create(self, title, content, date):
+    def create(self, title, content, date, author):
         post = WordPressPost()
         post.title = title
         post.content = content

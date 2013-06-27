@@ -11,6 +11,7 @@ from wordpress import WordPress
 class jekyll_to_wp():
     def __init__(self):
         self.wp = WordPress()
+        self.authors = self.fetch_authors()
 
     def run(self):
         blogs = self.parse_blogs()
@@ -18,14 +19,15 @@ class jekyll_to_wp():
             print "Creating:", blog['front_matter']['title'], '...',
             blog_id = self.wp.create(blog['front_matter']['title'],
                                      blog['html'],
-                                     blog['date'])
+                                     blog['date'],
+                                     self.authors.get(blog['author'], None))
             print 'done (%s)' % blog_id
 
     # load authors from the config file!
     def fetch_authors(self, url="https://raw.github.com/openspending/dotorg/master/_config.yml"):
         config_raw = ''.join(urllib2.urlopen(url).readlines())
         config = yaml.load(config_raw)
-        return config['authors']
+        return {author_id: author['name'] for author_id, author in config['authors'].items()}
 
     # parse all blogs in a given directory
     def parse_blogs(self, directory="_posts"):
