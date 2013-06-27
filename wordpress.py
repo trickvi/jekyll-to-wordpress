@@ -32,7 +32,7 @@ class WordPress(object):
         post.content = content
         post.date = date
         if user:
-            post.user = user
+            post.user = user.id
         post.post_status = 'publish'
 
         return self.wp.call(NewPost(post))
