@@ -12,9 +12,11 @@ class jekyll_to_wp():
         wp = WordPress()
         blogs = self.parse_blogs()
         for blog in blogs:
-            wp.create(blog['front_matter']['title'],
-                      blog['html'],
-                      blog['date'])
+            print "Creating:", blog['front_matter']['title'], '...',
+            blog_id = wp.create(blog['front_matter']['title'],
+                                blog['html'],
+                                blog['date'])
+            print 'done (%s)' % blog_id
 
     # parse all blogs in a given directory
     def parse_blogs(self, directory="_posts"):
