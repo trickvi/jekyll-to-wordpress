@@ -40,7 +40,7 @@ class WordPress(object):
         post.title = title
         post.content = content
         post.date = date
-        post.terms_names = separate_tags_and_categories(tags)
+        post.terms_names = self.separate_tags_and_categories(tags)
 
         user = self.get_author(author, self.default_author)
         if user:
