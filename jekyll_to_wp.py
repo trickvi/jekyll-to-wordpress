@@ -20,8 +20,13 @@ class jekyll_to_wp():
 
     # parse all blogs in a given directory
     def parse_blogs(self, directory="_posts"):
+        blogs = []
         blog_fullpaths = ['%s/%s' % (directory, blog_filename) for blog_filename in os.listdir(directory)]
-        return [self.parse_blog(blog_fullpath) for blog_fullpath in blog_fullpaths]
+        for blog_fullpath in blog_fullpaths:
+            blog = self.parse_blog(blog_fullpath)
+            if blog is not False:
+                blogs.append(blog)
+        return blogs
 
     # parse the specified blog file
     def parse_blog(self, blog_fullpath):
