@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import urllib2
 
 import markdown
 import yaml
@@ -19,6 +20,12 @@ class jekyll_to_wp():
                                      blog['html'],
                                      blog['date'])
             print 'done (%s)' % blog_id
+
+    # load authors from the config file!
+    def fetch_authors(self, url="https://raw.github.com/openspending/dotorg/master/_config.yml"):
+        config_raw = ''.join(urllib2.urlopen(url).readlines())
+        config = yaml.load(config_raw)
+        return config['authors']
 
     # parse all blogs in a given directory
     def parse_blogs(self, directory="_posts"):
